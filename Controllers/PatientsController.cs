@@ -98,6 +98,23 @@ namespace DoctorPatient.Controllers
         }
 
 
+        [HttpGet]
+        [Route("{id:Guid}")]
+
+        public async Task<IActionResult> GetByiD(Guid id)
+        {
+
+            var resultId=doctorPatientDbContext.patients.FirstOrDefault(a=>a.id==id);
+
+            if (resultId == null)
+            {
+                ModelState.AddModelError("", "The ID You Provide is Missing");
+                return BadRequest(ModelState);
+            }
+
+            return Ok(resultId);
+
+        }
 
  
 
