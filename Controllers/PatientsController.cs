@@ -2,6 +2,7 @@
 using DoctorPatient.Data;
 using DoctorPatient.DTO;
 using DoctorPatient.model;
+using DoctorPatient.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -15,11 +16,13 @@ namespace DoctorPatient.Controllers
     {
         private readonly DoctorPatientDbContext doctorPatientDbContext;
         private readonly IMapper mapper;
+        private readonly IPatients patients;
 
-        public PatientsController(DoctorPatientDbContext doctorPatientDbContext, IMapper mapper)
+        public PatientsController(DoctorPatientDbContext doctorPatientDbContext, IMapper mapper,IPatients patients)
         {
             this.doctorPatientDbContext = doctorPatientDbContext;
             this.mapper = mapper;
+            this.patients = patients;
         }
 
 
@@ -44,16 +47,12 @@ namespace DoctorPatient.Controllers
 
                 try
                 {
-                    var domainmodel = new Patients()
-                    {
-                        patientName = patientsCreateDto.patientName,
-                        Date = date,
-                        Time = time,
-                        DoctorId = patientsCreateDto.DoctorId
-                    };
+                    var domainmodel = await patients.CreateAsync(patientsCreateDto, date, time);
 
-                    await doctorPatientDbContext.AddAsync(domainmodel);
-                    await doctorPatientDbContext.SaveChangesAsync();
+                    if(domainmodel == null) {
+                        ModelState.AddModelError("", "couldnt able to create");
+                        return BadRequest(ModelState);
+                    }
 
                     return Ok(mapper.Map<PatientsCreateDto>(domainmodel));
                 }

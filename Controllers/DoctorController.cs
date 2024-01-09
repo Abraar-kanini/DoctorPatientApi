@@ -2,6 +2,7 @@
 using DoctorPatient.Data;
 using DoctorPatient.DTO;
 using DoctorPatient.model;
+using DoctorPatient.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,13 +18,15 @@ namespace DoctorPatient.Controllers
         private readonly IWebHostEnvironment webHostEnvironment;
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IMapper mapper;
+        private readonly IDoctor doctor;
 
-        public DoctorController(DoctorPatientDbContext doctorPatientDb,IWebHostEnvironment webHostEnvironment,IHttpContextAccessor httpContextAccessor,IMapper mapper)
+        public DoctorController(DoctorPatientDbContext doctorPatientDb,IWebHostEnvironment webHostEnvironment,IHttpContextAccessor httpContextAccessor,IMapper mapper,IDoctor doctor)
         {
             this.doctorPatientDb = doctorPatientDb;
             this.webHostEnvironment = webHostEnvironment;
             this.httpContextAccessor = httpContextAccessor;
             this.mapper = mapper;
+            this.doctor = doctor;
         }
 
         [HttpPost]
@@ -81,10 +84,15 @@ namespace DoctorPatient.Controllers
        
 
         
-        public async Task<List<Doctor>> Get()
+        public async Task<IActionResult> Get()
         {
-            var domainmodel = await doctorPatientDb.doctors.ToListAsync();
-            return domainmodel;
+            var domainmodel = await doctor.GetAll();
+            if (domainmodel==null)
+            {
+                ModelState.AddModelError("", "There is no data");
+                return BadRequest(ModelState);
+            }
+            return Ok(domainmodel);
         }
 
         [HttpPut]
@@ -109,33 +117,43 @@ namespace DoctorPatient.Controllers
 
         public async Task<IActionResult> GetById(Guid id)
         {
-            var doctorId= await doctorPatientDb.doctors.FirstOrDefaultAsync(x=>x.id==id);
-
-            if (doctorId == null)
+            var domainmodel= await doctor.GetById(id);
+            if (domainmodel == null)
             {
-                return BadRequest();
+                ModelState.AddModelError("", "There is no such id found");
+                return BadRequest(ModelState);
             }
-
-            return Ok(doctorId);
+            return Ok(domainmodel);
         }
 
         [HttpGet("filter")]
-        public async Task<List<Doctor>> GetByFilter([FromQuery] string? filterOn, [FromQuery] string? filterQuery)
+        public async Task<IActionResult> GetByFilter([FromQuery] string? filterOn, [FromQuery] string? filterQuery)
         {
-            var domainmodel = doctorPatientDb.doctors.AsQueryable();
-
-            if(string.IsNullOrWhiteSpace(filterOn)==false && string.IsNullOrWhiteSpace(filterQuery) == false)
+           var domainmodel= await doctor.GetFilter(filterOn,filterQuery);
+            if (domainmodel == null)
             {
-                if (filterOn.Equals("doctorName", StringComparison.OrdinalIgnoreCase))
-                {
-                    domainmodel = domainmodel.Where(a => a.doctorName.Contains(filterQuery));
-                }
+                ModelState.AddModelError("", "there is no data found");
+                return BadRequest(ModelState);
             }
 
-            var result = await domainmodel.ToListAsync();
-            return result;
+            return Ok(domainmodel);
 
             
+        }
+
+        [HttpDelete]
+        [Route("{id:Guid}")]
+
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var domainmodel=await doctor.Delete(id);
+            if (domainmodel == null)
+            {
+                ModelState.AddModelError("", "there is no data found");
+                return BadRequest(ModelState);
+
+            }
+            return Ok(domainmodel);
         }
 
 

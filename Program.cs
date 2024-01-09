@@ -1,5 +1,6 @@
 using DoctorPatient.Data;
 using DoctorPatient.Mapping;
+using DoctorPatient.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 
@@ -19,6 +20,9 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("doctorPatients")
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+builder.Services.AddScoped<IDoctor, DoctorRepo>();
+builder.Services.AddScoped<IPatients,PateintsRepo>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularApp",
@@ -29,6 +33,8 @@ builder.Services.AddCors(options =>
                    .AllowAnyMethod();
         });
 });
+
+
 
 var app = builder.Build();
 
