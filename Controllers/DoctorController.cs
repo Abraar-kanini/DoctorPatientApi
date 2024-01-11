@@ -3,6 +3,7 @@ using DoctorPatient.Data;
 using DoctorPatient.DTO;
 using DoctorPatient.model;
 using DoctorPatient.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ namespace DoctorPatient.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    
     public class DoctorController : ControllerBase
     {
         private readonly DoctorPatientDbContext doctorPatientDb;
@@ -81,6 +83,7 @@ namespace DoctorPatient.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles ="Reader")]
        
 
         

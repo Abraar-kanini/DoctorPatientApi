@@ -1,8 +1,12 @@
+using System.Text;
 using DoctorPatient.Data;
 using DoctorPatient.Mapping;
 using DoctorPatient.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,11 +21,15 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DoctorPatientDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("doctorPatients")));
 
+builder.Services.AddDbContext<DoctorPatientAuthDbContext>(options =>
+options.UseSqlServer(builder.Configuration.GetConnectionString("DoctorPatientAuth")));
+
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddScoped<IDoctor, DoctorRepo>();
 builder.Services.AddScoped<IPatients,PateintsRepo>();
+builder.Services.AddScoped<IAuthentication, AuthRepo>();
 
 builder.Services.AddCors(options =>
 {
@@ -36,6 +44,36 @@ builder.Services.AddCors(options =>
 
 
 
+builder.Services.AddIdentityCore<IdentityUser>()
+    .AddRoles<IdentityRole>()
+    .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("DoctorPatient")
+    .AddEntityFrameworkStores<DoctorPatientAuthDbContext>();
+
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequiredUniqueChars = 1;
+});
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    });
+
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -46,6 +84,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 
 app.UseAuthorization();
 app.UseStaticFiles(new StaticFileOptions

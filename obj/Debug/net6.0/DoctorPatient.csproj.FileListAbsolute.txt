@@ -138,3 +138,10 @@ C:\Users\Welcome\Desktop\Git\BackEnd\DoctorPatientApi\DoctorPatientApi\obj\Debug
 C:\Users\Welcome\Desktop\Git\BackEnd\DoctorPatientApi\DoctorPatientApi\obj\Debug\net6.0\DoctorPatient.pdb
 C:\Users\Welcome\Desktop\Git\BackEnd\DoctorPatientApi\DoctorPatientApi\obj\Debug\net6.0\DoctorPatient.genruntimeconfig.cache
 C:\Users\Welcome\Desktop\Git\BackEnd\DoctorPatientApi\DoctorPatientApi\obj\Debug\net6.0\ref\DoctorPatient.dll
+C:\Users\Welcome\Desktop\Git\BackEnd\DoctorPatientApi\DoctorPatientApi\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Welcome\Desktop\Git\BackEnd\DoctorPatientApi\DoctorPatientApi\bin\Debug\net6.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+C:\Users\Welcome\Desktop\Git\BackEnd\DoctorPatientApi\DoctorPatientApi\bin\Debug\net6.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+C:\Users\Welcome\Desktop\Git\BackEnd\DoctorPatientApi\DoctorPatientApi\bin\Debug\net6.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\Users\Welcome\Desktop\Git\BackEnd\DoctorPatientApi\DoctorPatientApi\bin\Debug\net6.0\Microsoft.Extensions.Identity.Core.dll
+C:\Users\Welcome\Desktop\Git\BackEnd\DoctorPatientApi\DoctorPatientApi\bin\Debug\net6.0\Microsoft.Extensions.Identity.Stores.dll
+C:\Users\Welcome\Desktop\Git\BackEnd\DoctorPatientApi\DoctorPatientApi\bin\Debug\net6.0\Microsoft.IdentityModel.Abstractions.dll
