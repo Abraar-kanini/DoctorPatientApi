@@ -29,7 +29,7 @@ namespace DoctorPatient.Controllers
             smtp.Send(email);
             smtp.Disconnect(true);
 
-            return Ok();
+            return Ok(); // this is email
 
         }
     }
