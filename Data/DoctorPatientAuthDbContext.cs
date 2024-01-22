@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using DoctorPatient.model;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,6 +36,7 @@ namespace DoctorPatient.Data
 
                 }
             };
+           
 
             builder.Entity<IdentityRole>().HasData(roles);
         }
