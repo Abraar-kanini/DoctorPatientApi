@@ -25,7 +25,7 @@ namespace DoctorPatient.Controllers
 
             using var smtp = new SmtpClient();
             smtp.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
-            smtp.Authenticate("jabraar01@gmail.com", "Abraar@001");
+            smtp.Authenticate("jabraar01@gmail.com", "passkey");
             smtp.Send(email);
             smtp.Disconnect(true);
 
