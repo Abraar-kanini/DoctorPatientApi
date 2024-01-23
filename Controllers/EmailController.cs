@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MimeKit;
 using MimeKit.Text;
+using System;
 
 namespace DoctorPatient.Controllers
 {
@@ -11,26 +12,30 @@ namespace DoctorPatient.Controllers
     [ApiController]
     public class EmailController : ControllerBase
     {
-
         [HttpPost]
-        public IActionResult SendMail(string body) { 
+        public IActionResult SendMail()
+        {
+            // Generate a random 6-digit number
+            Random random = new Random();
+            int randomNumber = random.Next(100000, 999999); // Generates a random number between 100000 and 999999
 
-        var email = new MimeMessage();
+            var email = new MimeMessage();
 
             email.From.Add(MailboxAddress.Parse("jabraar01@gmail.com"));
-            email.To.Add(MailboxAddress.Parse("abraar.kanini@gmail.com"));
+            email.To.Add(MailboxAddress.Parse("kjavith_hussain@yahoo.co.in"));
             email.Subject = "Test EmailSubject";
-            email.Body=new TextPart(TextFormat.Html) { Text=body };
 
+            // Concatenate the random number with the email body
+            string body = $"Your random number is: {randomNumber}";
+            email.Body = new TextPart(TextFormat.Html) { Text = body };
 
             using var smtp = new SmtpClient();
             smtp.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
-            smtp.Authenticate("jabraar01@gmail.com", "passkey");
+            smtp.Authenticate("jabraar01@gmail.com", "App Password");
             smtp.Send(email);
             smtp.Disconnect(true);
 
-            return Ok(); // this is email
-
+            return Ok(); // This is email
         }
     }
 }
