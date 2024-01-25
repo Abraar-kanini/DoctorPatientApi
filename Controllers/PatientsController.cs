@@ -3,10 +3,14 @@ using DoctorPatient.Data;
 using DoctorPatient.DTO;
 using DoctorPatient.model;
 using DoctorPatient.Repository;
+using MailKit.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
+using MimeKit.Text;
+using MimeKit;
+using MailKit.Net.Smtp;
 
 namespace DoctorPatient.Controllers
 {
@@ -53,7 +57,7 @@ namespace DoctorPatient.Controllers
                         ModelState.AddModelError("", "couldnt able to create");
                         return BadRequest(ModelState);
                     }
-
+                    SendMail();
                     return Ok(mapper.Map<PatientsCreateDto>(domainmodel));
                 }
                 catch (Exception ex)
@@ -115,7 +119,34 @@ namespace DoctorPatient.Controllers
 
         }
 
- 
+
+
+        private void SendMail()
+        {
+            // Generate a random 6-digit number
+            Random random = new Random();
+            int randomNumber = random.Next(100000, 999999); // Generates a random number between 100000 and 999999
+
+            var email = new MimeMessage();
+
+            email.From.Add(MailboxAddress.Parse("jabraar01@gmail.com"));
+            email.To.Add(MailboxAddress.Parse("abraar.kanini@gmail.com"));
+            email.Subject = "Registered Successfully";
+
+            // Concatenate the random number with the email body
+            string body = $"Your OTP is: {randomNumber} you registered successfully";
+            email.Body = new TextPart(TextFormat.Html) { Text = body };
+
+            using var smtp = new SmtpClient();
+            smtp.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+            smtp.Authenticate("jabraar01@gmail.com", "vcfg espi csts buzv");
+            smtp.Send(email);
+            smtp.Disconnect(true);
+
+            
+        }
+
+
 
 
 

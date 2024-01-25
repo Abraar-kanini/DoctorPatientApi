@@ -83,7 +83,7 @@ namespace DoctorPatient.Controllers
         }
 
         [HttpGet]
-       // [Authorize(Roles ="Reader")]
+       // [Authorize(Roles ="Reader")]           
        
 
         
