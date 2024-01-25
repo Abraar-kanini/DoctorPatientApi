@@ -1,5 +1,6 @@
 ﻿using DoctorPatient.DTO;
 using DoctorPatient.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -77,6 +78,48 @@ namespace DoctorPatient.Controllers
             return BadRequest("TRy Again");
         }
 
+
+
+
+        [HttpPut]
+        [Route("UpdatePassword")]
+        public async Task<IActionResult> UpdatePassword(string email, string newPassword)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(newPassword))
+                {
+                    return BadRequest("Email and newPassword are required");
+                }
+
+                var user = await userManager.FindByEmailAsync(email);
+
+                if (user == null)
+                {
+                    return NotFound("User not found");
+                }
+
+                var token = await userManager.GeneratePasswordResetTokenAsync(user);
+                var changePasswordResult = await userManager.ResetPasswordAsync(user, token, newPassword);
+
+                if (changePasswordResult.Succeeded)
+                {
+                    return Ok("Password updated successfully");
+                }
+
+                // If ResetPasswordAsync fails, collect and return error messages
+                return BadRequest(string.Join(", ", changePasswordResult.Errors.Select(e => e.Description)));
+            }
+            catch (Exception ex)
+            {
+                // Log the entire exception stack trace
+                Console.Error.WriteLine($"Exception in UpdatePassword: {ex}");
+
+                // Return a more detailed error message for debugging
+                return StatusCode(500, $"Internal server error: {ex.Message}\n{ex.StackTrace}");
+            }
+
+        }
 
 
 

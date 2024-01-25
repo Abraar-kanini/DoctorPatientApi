@@ -22,11 +22,11 @@ namespace DoctorPatient.Controllers
             var email = new MimeMessage();
 
             email.From.Add(MailboxAddress.Parse("jabraar01@gmail.com"));
-            email.To.Add(MailboxAddress.Parse("kjavith_hussain@yahoo.co.in"));
+            email.To.Add(MailboxAddress.Parse("keerthanar310502@gmail.com"));
             email.Subject = "Test EmailSubject";
 
             // Concatenate the random number with the email body
-            string body = $"Your random number is: {randomNumber}";
+            string body = $"Your OTP is: {randomNumber}";
             email.Body = new TextPart(TextFormat.Html) { Text = body };
 
             using var smtp = new SmtpClient();
