@@ -130,7 +130,7 @@ namespace DoctorPatient.Controllers
             var email = new MimeMessage();
 
             email.From.Add(MailboxAddress.Parse("jabraar01@gmail.com"));
-            email.To.Add(MailboxAddress.Parse("abraar.kanini@gmail.com"));
+            email.To.Add(MailboxAddress.Parse("hannandu007@gmail.com"));
             email.Subject = "Registered Successfully";
 
             // Concatenate the random number with the email body
